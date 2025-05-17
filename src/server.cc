@@ -1,44 +1,50 @@
 #include "ess_imports.h"
-#include "request.h"
-#include "types.h"
+#include <cstdlib>
 #include <print>
 #include <sys/socket.h>
+#include <unistd.h>
+#include "types.h"
+#include "router.h"
 void Server::setAddr(std::string addr = "0.0.0.0") { this->_addr = addr; }
-Server *Server::setPort(int port = 8080) {
+void Server::setPort(int port = 8080) {
   this->_port = port;
-  return this;
 }
 Server::Server() {
-  _run = true;
-  _socketfd = 0;
-  _servermeta = {
-      .sin_family = AF_INET,
-  };
-  this->setAddr();
-  this->setPort();
+    init();
+}
+Server::Server(const httpx::Router &router){
+    init();
+    _router=router;
+}
+
+void Server::init(){
+    _run = true;
+    _socketfd = 0;
+    _servermeta = {
+        .sin_family = AF_INET,
+    };
+    this->setAddr();
+    this->setPort();
 }
 
 void handler(int sig) {
   switch (sig) {
   case SIGINT:
     printf("[#] signal interrupt...\n");
-    exit(1);
     break;
   case SIGTERM:
     printf("[#] signal termination ...\n");
-    exit(1);
     break;
   case SIGKILL:
     printf("[#] signal kill ... \n");
-    exit(1);
     break;
 
   default:
     printf("unknown signal encountered ....\n");
-    exit(1);
     break;
   }
   printf("shutting down....\n");
+  exit(EXIT_FAILURE);
 }
 
 int Server::run() {
@@ -67,10 +73,13 @@ int Server::run() {
 
   while (_run) {
     int _acceptfd = accept(_socketfd, (struct sockaddr *)&_servermeta, &_len);
-    httpx::Request reqline=httpx::frameRequest(_acceptfd);
-    std::println("method : {} , version : {} , uri : {}",httpx::method_to_string(reqline.method),reqline.version,reqline.uri);
-    httpx::sendResponse(_acceptfd,"namaste india!!!");
+    // httpx::Request reqline=httpx::frameRequest(_acceptfd);
+    // httpx::sendResponse(_acceptfd,"namaste india!!!");
 
+    httpx::Response res = _router.handle(_acceptfd);
+    std::println("response: \n{}",httpx::to_string(res));
+    std::string response= httpx::to_string(res);
+    write(_acceptfd,response.c_str(), sizeof(response));
     close(_acceptfd);
   }
 

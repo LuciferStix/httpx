@@ -1,21 +1,25 @@
 
+#include "router.h"
 #include <string>
-// #include <sys/socket.h>
+
 #include <netinet/in.h>
-#include <sys/socket.h>
+// #include <sys/socket.h>
 
 // struct sockaddr_in;
 
 class Server {
 public:
   Server();
+  Server(const httpx::Router &);
+  void init();
 
-  Server *setPort(int);
+  void setPort(int);
   void setAddr(std::string);
   [[nodiscard]]
   int run();
 
 private:
+  httpx::Router _router;
   int _socketfd;
   // error of forward declaration
   std::string _addr;

@@ -12,29 +12,31 @@ enum Method {
   DELETE,
 };
 enum StatusCode {
-    OK, //200
-    BAD_REQUEST //404
+  OK,         // 200
+  BAD_REQUEST // 404
 };
-std::string status_to_string(StatusCode&);
 
+std::string status_to_string(const StatusCode &);
+std::string statuscode_to_statusmsg(const StatusCode &);
 
 std::string method_to_string(const Method &);
 Method to_method(const std::string &);
 
-struct Request {
-  std::string uri;
-  Method method;
-  std::string version = "HTTP/1.1";
-};
-
 struct Response {
+  Response(const StatusCode &);
+  Response(const std::string &);
+
   StatusCode status;
   std::string msg;
+  std::string header;
+  std::string body;
+  int bodylen;
 };
 
+void handleHeader(Response &);
 
-void sendResponse(int ,std::string );
+std::string to_string(Response &res);
+void sendResponse(int, std::string);
 
-
- }// namespace httpx
+} // namespace httpx
 #endif

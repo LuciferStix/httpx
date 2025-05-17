@@ -1,8 +1,16 @@
+#include "request.h"
+#include "router.h"
 #include "server.h"
-int main(){
-    Server a;
+#include "types.h"
+int main() {
+  httpx::Router router;
+  router.add(httpx::Method::GET, "/", [](const httpx::Request &a) {
+    return httpx::Response("hello there");
+  });
 
-    if (a.run() < 0 )
-        printf("server band hogaya\n");
-    return 0;
+  Server a(router);
+
+  if (a.run() < 0)
+    printf("server band hogaya\n");
+  return 0;
 }
