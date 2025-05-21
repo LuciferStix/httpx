@@ -1,7 +1,7 @@
 #ifndef __HTTP__ROUTER
 #define __HTTP__ROUTER
 
-#include "request.h"
+// #include "request.h"
 #include "types.h"
 #include <functional>
 #include <map>

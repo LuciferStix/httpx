@@ -79,7 +79,7 @@ int Server::run() {
     httpx::Response res = _router.handle(_acceptfd);
     std::println("response: \n{}",httpx::to_string(res));
     std::string response= httpx::to_string(res);
-    write(_acceptfd,response.c_str(), sizeof(response));
+    send(_acceptfd,response.c_str(),response.size(),0);
     close(_acceptfd);
   }
 

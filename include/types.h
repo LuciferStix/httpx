@@ -38,5 +38,12 @@ void handleHeader(Response &);
 std::string to_string(Response &res);
 void sendResponse(int, std::string);
 
+struct Request{
+    Method method;
+    std::string uri;
+};
+
+
+
 } // namespace httpx
 #endif

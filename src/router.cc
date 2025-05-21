@@ -23,14 +23,14 @@ namespace httpx{
             return Response(httpx::BAD_REQUEST);
         }
         const Request& request =req.value();
-        if(routes.contains(request.uri)){
-            RouterMeta rm = routes[request.uri];
-            if(request.method == rm.method){
-                return  rm.routerhandler(request);
-            }
+        if(!routes.contains(request.uri) ){
+            Response a(StatusCode::BAD_REQUEST);
+            a.body="Page not found ";
+            return a;
         }
 
-            return Response(httpx::BAD_REQUEST);
+        RouterMeta rm=routes[request.uri];
+
 
     }
 
@@ -52,9 +52,8 @@ namespace httpx{
 
         std::stringstream reqline;
         reqline<<readline(fd);
-        if (reqline.rdbuf()->in_avail() == 0){
-            return std::nullopt ;
-        }
+        if(reqline.rdbuf()->in_avail() ==0)
+            return std::nullopt;
         std::string method , uri ;
         reqline>>method>>uri;
         return Request{.method= to_method(method) , .uri=uri };

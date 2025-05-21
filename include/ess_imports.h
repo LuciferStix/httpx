@@ -3,8 +3,7 @@
 #endif
 
 
-
-#include "include/server.h"
+#include "server.h"
 #include <arpa/inet.h>
 #include <asm-generic/socket.h>
 #include <csignal>

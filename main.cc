@@ -1,13 +1,19 @@
-#include "request.h"
+// #include "request.h"
 #include "router.h"
 #include "server.h"
 #include "types.h"
 int main() {
   httpx::Router router;
+
   router.add(httpx::Method::GET, "/", [](const httpx::Request &a) {
-    return httpx::Response("hello there");
+    return httpx::Response("GAWWWWKWKKKK");
   });
 
+
+
+  router.add(httpx::Method::GET, "/noice", [](const httpx::Request &a) {
+    return httpx::Response("yoo NIGAAA");
+  });
   Server a(router);
 
   if (a.run() < 0)
